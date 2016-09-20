@@ -16,23 +16,22 @@ namespace PlungerBot
     [BotAuthentication]
     public class MessagesController : ApiController
     {
-        private static IDialog<Plunger> MakeRootDialog()
-        {
-            return Chain.From(() => FormDialog.FromForm(SimplePlungerBot.BuildForm));
-        }
+        //private static IDialog<Plunger> MakeRootDialog()
+        //{
+        //    return Chain.From(() => FormDialog.FromForm(SimplePlungerBot.BuildForm));
+        //}
 
         public async Task<HttpResponseMessage> Post([FromBody]Activity activity)
         {
             if (activity.Type == "message")
             {
-                // SimplePungerBot
-                //await Conversation.SendAsync(activity, MakeRootDialog);
+                ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+                // calculate something for us to return
+                int length = (activity.Text ?? string.Empty).Length;
 
-                // AdvancedPlungerBot
-                //await Conversation.SendAsync(activity, () => new AdvancedPlungerBot());
-
-                // LuisPlungerBot
-                await Conversation.SendAsync(activity, () => new LuisPlungerBot(SimplePlungerBot.BuildForm));
+                // return our reply to the user
+                Activity reply = activity.CreateReply($"You sent {activity.Text} which was {length} characters");
+                await connector.Conversations.ReplyToActivityAsync(reply);
             }
             else
             {
