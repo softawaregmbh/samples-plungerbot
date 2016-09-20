@@ -18,7 +18,7 @@ namespace PlungerBot.Bots
             context.Wait(MessageReceivedAsync);
         }
 
-        private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<Message> result)
+        private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> result)
         {
             var message = await result;
 

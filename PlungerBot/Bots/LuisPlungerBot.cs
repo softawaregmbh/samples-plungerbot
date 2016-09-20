@@ -39,7 +39,8 @@ namespace PlungerBot.Bots
 
         private async Task PlungerFormComplete(IDialogContext context, IAwaitable<Plunger> result)
         {
-            // TODO
+            var plunger = await result;
+            context.Done(result);
         }
     }
 }

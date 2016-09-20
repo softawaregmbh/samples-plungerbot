@@ -16,50 +16,58 @@ namespace PlungerBot
     [BotAuthentication]
     public class MessagesController : ApiController
     {
-        /// <summary>
-        /// POST: api/Messages
-        /// Receive a message from a user and reply to it
-        /// </summary>
-        public async Task<Message> Post([FromBody]Message message)
+        private static IDialog<Plunger> MakeRootDialog()
         {
-            if (message.Type == "Message")
+            return Chain.From(() => FormDialog.FromForm(SimplePlungerBot.BuildForm));
+        }
+
+        public async Task<HttpResponseMessage> Post([FromBody]Activity activity)
+        {
+            if (activity.Type == "message")
             {
-                //return await Conversation.SendAsync(message, () => FormDialog.FromForm(SimplePlungerBot.BuildForm));
-                //return await Conversation.SendAsync(message, () => new AdvancedPlungerBot());
-                return await Conversation.SendAsync(message, () => new LuisPlungerBot(SimplePlungerBot.BuildForm));
+                // SimplePungerBot
+                //await Conversation.SendAsync(activity, MakeRootDialog);
+
+                // AdvancedPlungerBot
+                //await Conversation.SendAsync(activity, () => new AdvancedPlungerBot());
+
+                // LuisPlungerBot
+                await Conversation.SendAsync(activity, () => new LuisPlungerBot(SimplePlungerBot.BuildForm));
             }
             else
             {
-                return HandleSystemMessage(message);
+                HandleSystemMessage(activity);
             }
+
+            return new HttpResponseMessage(System.Net.HttpStatusCode.Accepted);
         }
 
-        private Message HandleSystemMessage(Message message)
+        private Activity HandleSystemMessage(Activity activity)
         {
-            if (message.Type == "Ping")
+            if (activity.Type == "Ping")
             {
-                Message reply = message.CreateReplyMessage();
+                Activity reply = activity.CreateReply();
                 reply.Type = "Ping";
                 return reply;
             }
-            else if (message.Type == "DeleteUserData")
+            else if (activity.Type == "DeleteUserData")
             {
                 // Implement user deletion here
                 // If we handle user deletion, return a real message
             }
-            else if (message.Type == "BotAddedToConversation")
+            else if (activity.Type == "BotAddedToConversation")
             {
             }
-            else if (message.Type == "BotRemovedFromConversation")
+            else if (activity.Type == "BotRemovedFromConversation")
             {
             }
-            else if (message.Type == "UserAddedToConversation")
+            else if (activity.Type == "UserAddedToConversation")
             {
             }
-            else if (message.Type == "UserRemovedFromConversation")
+            else if (activity.Type == "UserRemovedFromConversation")
             {
             }
-            else if (message.Type == "EndOfConversation")
+            else if (activity.Type == "EndOfConversation")
             {
             }
 

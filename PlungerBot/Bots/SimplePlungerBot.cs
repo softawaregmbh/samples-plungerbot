@@ -13,10 +13,10 @@ namespace PlungerBot.Bots
         {
             return new FormBuilder<Plunger>()
                 .Field(nameof(Plunger.CalculationType))
-                .Field(nameof(Plunger.Force), (plunger) => plunger.CalculationType != PlungerCalculationType.Force)
-                .Field(nameof(Plunger.Area), (plunger) => plunger.CalculationType != PlungerCalculationType.Area)
-                .Field(nameof(Plunger.Pressure), (plunger) => plunger.CalculationType != PlungerCalculationType.Pressure)
-                .OnCompletionAsync(async (context, plunger) =>
+                .Field(nameof(Plunger.Force), (state) => state.CalculationType != PlungerCalculationType.Force)
+                .Field(nameof(Plunger.Area), (state) => state.CalculationType != PlungerCalculationType.Area)
+                .Field(nameof(Plunger.Pressure), (state) => state.CalculationType != PlungerCalculationType.Pressure)
+                .OnCompletion(async (context, plunger) =>
                 {
                     plunger.Calculate();
 
